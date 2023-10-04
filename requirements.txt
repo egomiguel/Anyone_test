@@ -1,6 +1,6 @@
 PyPDF2
 pypdf
 langchain
-chromadb
+chromadb==0.3.29
 sentence_transformers
 streamlit
