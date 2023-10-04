@@ -1,0 +1,6 @@
+PyPDF2
+pypdf
+langchain
+chromadb
+sentence_transformers
+streamlit
