@@ -23,11 +23,12 @@ class LLM:
         )
         self.vector_store = None
         self.checkDataBase()
+        print("Size Data Base: ", self.vector_store._collection.count())
 
     def getSplitData(self) -> list:
         loader = PyPDFDirectoryLoader(DATA_PATH)
         documents = loader.load()
-
+        print("Splitting data. Dir: ", DATA_PATH)
         r_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=150,
@@ -39,16 +40,20 @@ class LLM:
         return r_splitter_result
     
     def checkDataBase(self) -> None:
-        if not glob.glob(os.path.join(CHROMA_PATH, "*.sqlite3")):
+        if not glob.glob(os.path.join(CHROMA_PATH, "*.parquet")):
+            print("Creating database. Dir: ", CHROMA_PATH)
             r_splitter_result = self.getSplitData()
             self.vector_store = Chroma.from_documents(
                 r_splitter_result, self.hf_embedding, persist_directory=CHROMA_PATH
             )
         else:
+            print("Loading database. Dir: ", CHROMA_PATH)
             self.vector_store = Chroma(
                 persist_directory=CHROMA_PATH, embedding_function=self.hf_embedding
             )
     
     def getSimilarity(self, question : str) -> str:
         docs = self.vector_store.similarity_search(question,k=1)
+        if len(docs) == 0:
+            return "No tengo respuesta a su pregunta."
         return docs[0].page_content
