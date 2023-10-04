@@ -52,10 +52,3 @@ class LLM:
     def getSimilarity(self, question : str) -> str:
         docs = self.vector_store.similarity_search(question,k=1)
         return docs[0].page_content
-
-"""
-llm = LLM()
-question = "Cuales son algunas de las limitaciones de la cobertura?"
-resutl = llm.getSimilarity(question)
-print(resutl)
-"""
